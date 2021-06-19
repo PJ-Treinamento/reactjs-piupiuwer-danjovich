@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from 'styled-components';
 
 export const colors = {
 	background: '#f3f3f3',
@@ -29,10 +29,18 @@ export const GlobalStyle = createGlobalStyle`
 
 		display: flex;
 		justify-content: center;
+
+		height: 100vh;
 	}
 
 	a {
 		text-decoration: none;
 		color: unset;
+	}
+
+	input,
+	button,
+	textarea {
+		outline: 0;
 	}
 `

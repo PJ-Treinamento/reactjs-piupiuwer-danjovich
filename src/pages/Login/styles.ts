@@ -5,9 +5,9 @@ import { colors } from '../../assets/styles';
 
 export const PageDiv = styled.div`
     min-height: 100vh;
+    max-width: 100vw;
     display: flex;
     align-items: center;
-    max-width: 100vw;
 `
 
 export const FrameDiv = styled.div`
@@ -79,6 +79,14 @@ export const StyledButton = styled.button`
 
 export const ErrorMessage = styled.p`
     color: ${colors.error};
+`
 
+export const NonSubmitStyledButton = styled.button`
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: 2.5%;
+    margin-bottom: -3%;
+    color: ${colors.link};
     
 `
