@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { User } from "../User";
+import api from "../../services/api";
 
 import like from "../../assets/images/like.svg";
+import liked from "../../assets/images/liked.svg";
 import pin from "../../assets/images/destacar.svg";
 import deleteImage from "../../assets/images/deletar.svg";
+import genericUserPhoto from "../../assets/images/perfil.svg";
 
 import { PiuLi } from "./styles";
-import Like from "../Like";
 
 export interface PiuLike {
     id: string,
@@ -25,17 +27,56 @@ export interface Piu {
 }
 
 interface PiuTagProps {
-    piu: Piu
-    currentUserPiu?: boolean
+    piu: Piu,
+    liked?: boolean,
+    currentUser: User
 }
 
-const PiuTag: React.FC<PiuTagProps> = ({piu, currentUserPiu}) => {
-    const numberOfLikes = piu.likes.length;
+const PiuTag: React.FC<PiuTagProps> = ({piu, currentUser}) => {  
+    let currentUserPiu = false;
+    if (piu.user.id === currentUser.id) currentUserPiu = true;
+    
+    const [numberOfLikes, setNumberOfLikes] = useState(piu.likes.length);
+    const [likedByCurrentUser, setLikedByCurrentUser] = useState(false);
+
+    useEffect(() => {
+        for (const like of piu.likes) {
+            if (like.user.id === currentUser.id)
+                setLikedByCurrentUser(true);
+        }
+    }, [piu, currentUser]);
+
+    const id = piu.id;
+    const token = localStorage.getItem('token');
+    api.defaults.headers.authorization = `Bearer ${token}`;
+    async function likePiu() {
+        await api.post('pius/like', {
+            piu_id: id
+        }).then((response) => {
+            if (response.data.operation === 'like') {
+                setNumberOfLikes(numberOfLikes + 1);
+                setLikedByCurrentUser(true);
+            }
+            else if (response.data.operation === 'unlike') {
+                setNumberOfLikes(numberOfLikes - 1);
+                setLikedByCurrentUser(false);
+            }
+            
+            // checkIfWasLikedByCurrentUser();
+        }).catch((error) => {
+            console.log(error);
+            alert('Erro: não foi possível dar like');
+        });
+    }
+    
 
     const formatedDate = (date: Date) => {
         let dif = Math.abs(Number(new Date()) - Number(date));
         let hoursAgo = Math.trunc(dif / 3.6E6);
-        if (hoursAgo < 24) {
+        let minutesAgo = Math.trunc(dif / 6E4);
+        if (minutesAgo < 60) {
+            return 'Há ' + String(minutesAgo) + ' minuto(s)';
+        } else if (hoursAgo < 24) {
             return 'Há ' + String(hoursAgo) + 'h';
         } else {
             return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() +
@@ -43,11 +84,23 @@ const PiuTag: React.FC<PiuTagProps> = ({piu, currentUserPiu}) => {
         }
     }
 
+    const [deletedPiu, setDeletedPiu] = useState(false);
+    async function deletePiu() {
+        await api.delete('pius', {
+            data:{piu_id: id}
+        }).then((response) => {
+            console.log(response.data);
+            setDeletedPiu(true);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
     return (
-        <PiuLi>
+        <PiuLi deletedPiu={deletedPiu}>
             <div className="info">
                 <div className="square">
-                    <img src={piu.user.photo} alt="Foto de Perfil" />
+                    <img src={piu.user.photo === '' ? genericUserPhoto : piu.user.photo} alt="Foto de Perfil" />
                 </div>
                 <div className="name-and-username">
                     <strong>{piu.user.first_name} {piu.user.last_name} <span>@{piu.user.username} · {formatedDate(new Date(String(piu.updated_at)))}</span></strong>
@@ -56,12 +109,12 @@ const PiuTag: React.FC<PiuTagProps> = ({piu, currentUserPiu}) => {
             <p>{piu.text}</p>
             <div className="interactions">
                 <div>
-                    {/* <img src={like} alt="Like" className="like" /> */}
-                    <Like />
+                    <img src={likedByCurrentUser ? liked : like} onClick={likePiu} alt="Like" className="like" />
                     <span>{numberOfLikes}</span>
                 </div>
+                {/* Implementar pin usando localStorage!!! */}
                 <img src={pin} alt="Destacar" className="highlight" />
-                {currentUserPiu && <img src={deleteImage} alt="Deletar" className="delete" />}
+                {currentUserPiu && <img src={deleteImage} onClick={deletePiu} alt="Deletar" className="delete" />}
             </div>
         </PiuLi>
     )

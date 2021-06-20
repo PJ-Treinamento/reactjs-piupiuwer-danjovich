@@ -27,11 +27,11 @@ const UserTag: React.FC<UserTagProps> = ({user}) => {
     return(
         <Profile>
             <div className="square">
-                <img src="images/pefil.svg" alt="Foto de Perfil" id="current-user-img" />
+                <img src={user.photo} alt="Foto de Perfil" id="current-user-img" />
             </div>
             <div className="info">
                 <div className="name-and-username" id="current-user-info">
-                    <strong>Eu <span>@meu_username</span></strong>
+                    <strong>{user!.first_name} {user!.last_name} <span>@{user!.username}</span></strong>
                 </div>
             </div>
         </Profile>

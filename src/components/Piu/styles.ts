@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
-export const PiuLi = styled.li`
+interface liProps {
+    deletedPiu: boolean
+}
+
+export const PiuLi = styled.li<liProps>`
+    display: ${props => props.deletedPiu ? 'none' : 'block'};
     border: 1px solid #6c8193;
     background: #fff;
     margin-top: -1px;
@@ -9,18 +14,6 @@ export const PiuLi = styled.li`
         display: flex;
         align-items: center;
         margin: 16px 16px;
-    }
-
-    .info .square,
-    aside .square {
-        display: flex;
-        justify-content: center;
-        flex-shrink: 0;
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-right: 8px;
     }
 
     .info img,

@@ -34,6 +34,7 @@ function Login() {
             localStorage.setItem('password', password);
             setStoredLoginData(true);
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('username', response.data.user.username);
 
             history.push('/feed');
         }).catch((error) => {
