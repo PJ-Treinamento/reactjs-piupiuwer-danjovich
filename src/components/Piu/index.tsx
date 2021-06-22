@@ -33,18 +33,7 @@ interface PiuTagProps {
 }
 
 const PiuTag: React.FC<PiuTagProps> = ({piu, favorite}) => { 
-    // const [currentUser, setCurrentUser] = useState<User>();
     const username = localStorage.getItem('username');
-    // async function getUser() {
-    //     await api.get(`users?username=${username}`).then((response) => {
-    //         // console.log(response.data);
-    //         setCurrentUser(response.data[0]);
-    //     }).catch((error) => {
-    //         alert('Erro!');
-    //         console.log(error);
-    //     });
-    // }
-    // getUser();
     
     let currentUserPiu = false
     if (piu.user.username === username) currentUserPiu = true;
@@ -58,12 +47,8 @@ const PiuTag: React.FC<PiuTagProps> = ({piu, favorite}) => {
             if (like.user.username === username)
                 setLikedByCurrentUser(true);
         }
-        // console.log(currentUser.favorites);
-        // for (const favoritePiu of currentUser.favorites) {
-        //     if (favoritePiu.id === piu.id)
-        //         setFavoritePiu(true);
-        // }
-    }, [piu, username]);
+        setFavoritePiu(favorite);
+    }, [piu, favorite, username]);
 
     const id = piu.id;
     const token = localStorage.getItem('token');
@@ -80,8 +65,6 @@ const PiuTag: React.FC<PiuTagProps> = ({piu, favorite}) => {
                 setNumberOfLikes(numberOfLikes - 1);
                 setLikedByCurrentUser(false);
             }
-            
-            // checkIfWasLikedByCurrentUser();
         }).catch((error) => {
             console.log(error);
             alert('Erro: não foi possível dar like');
@@ -107,8 +90,7 @@ const PiuTag: React.FC<PiuTagProps> = ({piu, favorite}) => {
     async function deletePiu() {
         await api.delete('pius', {
             data: {piu_id: id}
-        }).then((response) => {
-            // console.log(response.data);
+        }).then(() => {
             setDeletedPiu(true);
         }).catch((error) => {
             console.log(error);
@@ -117,22 +99,14 @@ const PiuTag: React.FC<PiuTagProps> = ({piu, favorite}) => {
 
 
     async function favoriteThisPiu() {
-        if (!favoritePiu) {
-            await api.post('pius/favorite', {
-                data: {piu_id: piu.id}
-            }).catch((error) => {
-                console.log('Erro ao favoritar: ' + error);
-            });
-            // console.log('favorite!');
-            // console.log(piu);
-        } else {
-            await api.post('pius/unfavorite', {
-                data: { piu_id: piu.id }
-            }).catch((error) => {
-                console.log('Erro ao desfavoritar: ' + error);
-            });
-            // console.log('not favorite!');
-        }
+        let favoriteOrUnfavorite = favoritePiu ? 'unfavorite' : 'favorite';
+
+        await api.post(`pius/${favoriteOrUnfavorite}`, {
+            piu_id: id
+        }).catch((error) => {
+            console.log(error);
+        });
+
         setFavoritePiu(!favoritePiu);
     }
 

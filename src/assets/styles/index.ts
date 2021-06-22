@@ -21,7 +21,8 @@ export const GlobalStyle = createGlobalStyle`
 	}
 
 	body {
-		width: 100%;
+		width: 100vw;
+		height: 100vh;
 		background: ${colors.background};
 		font-family: 'Lato', sans-serif;
 		text-rendering: optimizeLegibility !important;
@@ -30,7 +31,6 @@ export const GlobalStyle = createGlobalStyle`
 		display: flex;
 		justify-content: center;
 
-		height: 100vh;
 	}
 
 	a {
@@ -42,5 +42,11 @@ export const GlobalStyle = createGlobalStyle`
 	button,
 	textarea {
 		outline: 0;
+	}
+
+	@media(max-width: 1360px) {
+		#root {
+			width: 100vw;
+		}
 	}
 `

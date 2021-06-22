@@ -18,5 +18,6 @@ export const Profile = styled.div`
     .name-and-username span {
         font-weight: normal;
         color: #b3b3b3;
+        word-break: break-all;
     }
 `

@@ -43,11 +43,11 @@ function Feed() {
 
     // Será usado para a publicação de novos pius
     const [newPiuPublished, setNewPiuPublished] = useState(false);
+    const [favoritePius, setFavoritePius] = useState<Piu[]>();
     useEffect(() => {
         async function getPius() {
             await api.get('pius').then((response) => {
                 const data = response.data;
-                // console.log(data);
 
                 let piusArray: Piu[];
                 piusArray = [];
@@ -65,17 +65,6 @@ function Feed() {
             });
         }
 
-        // async function getUser() {
-        //     await api.get(`users?username=${username}`).then((response) => {
-        //         // console.log(response.data);
-        //         setCurrenteUser(response.data[0]);
-        //         setCourrentUserFound(true);
-        //     }).catch((error) => {
-        //         alert('Erro!');
-        //         console.log(error);
-        //     });
-        // }
-
         const username = localStorage.getItem('username');
         async function getUsers() {
             await api.get('users').then((response) => {
@@ -86,10 +75,12 @@ function Feed() {
                     if (user.username === username) {
                         setCurrentUser(user);
                         localCurrentUser = user;
+                        setFavoritePius(localCurrentUser.favorites);
                         setCourrentUserFound(true);
                         break;
                     }
                 }
+
                 allUsers = allUsers.filter((user: User) => {
                     return user.id !== localCurrentUser!.id;
                 });
@@ -126,13 +117,6 @@ function Feed() {
             setLengthSize('too-short');
         }
     }
-
-    // insertAt insere um ou mais elementos (elements) dentro de uma array 
-    // na posição index:
-    // const insertAt = (array: Array<any>, index: number, elements: any) => {
-    //     let result = array;
-    //     return result.splice(index, 0, elements);
-    // }
     
     async function publishNewPiu(e: FormEvent) {
         e.preventDefault();
@@ -145,7 +129,6 @@ function Feed() {
         await api.post('pius', {
             text: newPiu
         }).then((response) => {
-            // console.log(response);
             setNewPiuPublished(true);
         }).catch((error) => {
             console.log(error);
@@ -235,18 +218,18 @@ function Feed() {
                     {filteredPius.map((piu: Piu) => {
                         let isFavoritePiu = false;
                         if (currentUserFound) {
-                            // MUDAR PARA FAVORITAR LOCAL E EXPLICAR
-                            console.log(currentUser!.favorites);
-                            for (const favoritePiu of currentUser!.favorites) {
-                                if (favoritePiu.id === piu.id)
+                            for (const favoritePiu of favoritePius!) {
+                                if (favoritePiu.id === piu.id) {
+                                    console.log(favoritePius);
                                     isFavoritePiu = true;
+                                }
                             }
                         }
                         return <PiuTag piu={piu} favorite={isFavoritePiu} key={piu.id} />
                     })}
                 </Pius>
             </StyledSection>
-                    {/* Fazer Aside e terminar componente User */}
+
             <Aside>
                 <h2>Seu Perfil</h2>
                 {currentUserFound && <UserTag user={currentUser!} />}

@@ -47,4 +47,23 @@ export const PiuLi = styled.li<liProps>`
     .interactions div img {
         margin-right: 4px;
     }
+
+    @media(max-width: 1024px) {
+        .interactions {
+            display: flex;
+            /* flex-direction: column; */
+            justify-content: center;
+            margin-left: 0;
+        }
+
+        .interactions div,
+        .interactions > img {
+            margin-right: 32px;
+            margin-left: 32px;
+        }
+
+        .interactions:last-child {
+            margin-right: 0;
+        }
+    }
 `

@@ -41,9 +41,14 @@ export const PageDiv = styled.div`
         margin-right: 8px;
     }
 
-    @media(max-width: 1200px) {
-        h1 {
-            display: none
+    @media(max-width: 1172px) {
+        flex-direction: column;
+        align-items: center;
+        width: 100vw;
+        margin: 0;
+
+        aside {
+            display: none;
         }
     }
 
@@ -58,8 +63,8 @@ export const StyledHeader = styled.header`
     display: block;
 
     nav {
-        display: flex;
-        flex-direction: column;
+        /* display: flex;
+        flex-direction: column; */
         margin-left: 3.4%;
         margin-top: 8%;
         padding: 0;
@@ -96,7 +101,51 @@ export const StyledHeader = styled.header`
         width: 40px;
         height: 40px;
         margin-right: 4%;
-    }   
+    }
+
+    @media(max-width: 1172px) {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        margin-top: 8px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        nav {
+            margin-top: 0;
+        }
+
+        nav ul {
+            display: flex;
+            /* flex-direction: column; */
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        nav ul li {
+            margin-top: 0;
+            margin-bottom: 16px;
+            margin-right: 32px;
+            margin-left: 32px;
+        }
+
+    }
+
+    @media(max-width: 425px) {
+        nav ul li:first-child {
+            display: none;
+        }
+
+    }
+
+    @media(min-width: 769px) {
+        margin-left: 5vw;
+        max-width: 30vw;
+
+    }
 `
 
 export const NewPiu = styled.form`
@@ -120,26 +169,6 @@ export const NewPiu = styled.form`
         justify-content: center;
         margin-top: 16px;
     }
-
-    /* .too-big label {
-        color: #ff5733;
-        font-weight: 900;
-    }
-
-    .too-big textarea {
-        background: #FAAF9F;
-    }
-
-    .too-big input,
-    .too-short input {
-        background: #b3b3b3;
-        cursor: default;
-    }
-
-    input[type="submit"]:disabled {
-        background: ${colors.lightGray};
-        cursor: default;
-    } */
 `
 
 export const StyledSection = styled.section`
@@ -176,6 +205,25 @@ export const StyledSection = styled.section`
     ${NewPiu} input[type="submit"]:disabled {
         background: ${colors.lightGray};
         cursor: default;
+    }
+
+	@media(min-width: 769px) {
+        min-width: 40vw;
+        margin-left: 30vw;
+    }
+
+    @media(max-width: 1172px) {
+        width: 80vw;
+        margin: 0;
+        margin-bottom: 8px;
+        
+    }
+
+    @media(max-width: 425px) {
+        form {
+            padding-right: 4px;
+            padding-left: 4px;
+        }
     }
 `
 
@@ -217,7 +265,6 @@ export const Sticky = styled.div`
     }
 
     form#filter {
-        /* display: none; */
         flex-direction: row;
         background: #E8ECEF;
         color: #3f3f3f;
@@ -231,6 +278,21 @@ export const Sticky = styled.div`
 
     form#filter div label {
         margin-left: 4px;
+    }
+
+    @media(max-width: 1172px) {
+        .searchbar {
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+    }
+
+    @media(max-width: 425px) {
+        form#filter {
+            display: flex;
+            flex-direction: column;
+        }
+
     }
 `
 
