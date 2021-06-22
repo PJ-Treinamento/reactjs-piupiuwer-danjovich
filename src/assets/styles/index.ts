@@ -30,7 +30,8 @@ export const GlobalStyle = createGlobalStyle`
 
 		display: flex;
 		justify-content: center;
-
+    	
+		overflow-x: hidden;
 	}
 
 	a {
@@ -44,9 +45,7 @@ export const GlobalStyle = createGlobalStyle`
 		outline: 0;
 	}
 
-	@media(max-width: 1360px) {
-		#root {
-			width: 100vw;
-		}
+	#root {
+		width: 100vw;
 	}
 `

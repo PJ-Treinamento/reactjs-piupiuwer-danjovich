@@ -5,8 +5,6 @@ import searchImage from "../../assets/images/buscar.svg";
 export const PageDiv = styled.div`
     width: 80vw;
     display: flex;
-    /* flex-direction: column; */
-    /* justify-content: center; */
 
     button,
 	input.button {
@@ -63,8 +61,6 @@ export const StyledHeader = styled.header`
     display: block;
 
     nav {
-        /* display: flex;
-        flex-direction: column; */
         margin-left: 3.4%;
         margin-top: 8%;
         padding: 0;
@@ -119,7 +115,6 @@ export const StyledHeader = styled.header`
 
         nav ul {
             display: flex;
-            /* flex-direction: column; */
             align-items: center;
             justify-content: center;
 

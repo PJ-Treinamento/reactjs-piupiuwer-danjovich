@@ -51,7 +51,6 @@ export const PiuLi = styled.li<liProps>`
     @media(max-width: 1024px) {
         .interactions {
             display: flex;
-            /* flex-direction: column; */
             justify-content: center;
             margin-left: 0;
         }

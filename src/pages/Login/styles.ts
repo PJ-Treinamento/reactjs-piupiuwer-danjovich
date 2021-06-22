@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { colors } from '../../assets/styles';
 
-// import Logo from '../../components/Logo';
-
 export const PageDiv = styled.div`
     min-height: 100vh;
     max-width: 100vw;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
 `
 
 export const FrameDiv = styled.div`
@@ -17,7 +17,7 @@ export const FrameDiv = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 6% 0;
+    padding: 2% 0;
 
     p:not(#error) {
         text-align: center;

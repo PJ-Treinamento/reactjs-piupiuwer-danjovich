@@ -27,7 +27,7 @@ interface UserTagProps {
 
 const UserTag: React.FC<UserTagProps> = ({user}) => {
     return(
-        <Profile>
+        <Profile className="profile">
             <div className="square">
                 <img src={(user.photo.indexOf('http') === -1) ? genericProfilePhoto : user.photo} alt="Foto de Perfil" id="current-user-img" />
             </div>
