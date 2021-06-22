@@ -1,5 +1,7 @@
 import React from "react";
 
+import genericProfilePhoto from "../../assets/images/perfil.svg";
+
 import { Piu, PiuLike } from "../Piu";
 import { Profile } from "./styles";
 
@@ -27,11 +29,11 @@ const UserTag: React.FC<UserTagProps> = ({user}) => {
     return(
         <Profile>
             <div className="square">
-                <img src={user.photo} alt="Foto de Perfil" id="current-user-img" />
+                <img src={(user.photo.indexOf('http') === -1) ? genericProfilePhoto : user.photo} alt="Foto de Perfil" id="current-user-img" />
             </div>
             <div className="info">
                 <div className="name-and-username" id="current-user-info">
-                    <strong>{user!.first_name} {user!.last_name} <span>@{user!.username}</span></strong>
+                    <strong>{user!.first_name} {user!.last_name} <br /><span>@{user!.username}</span></strong>
                 </div>
             </div>
         </Profile>

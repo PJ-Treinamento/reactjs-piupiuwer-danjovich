@@ -239,33 +239,31 @@ export const Pius = styled.ul`
 `
 
 export const Aside = styled.aside`
-    aside {
-        margin: 40px 32px 0 24px;
-    }
+    margin: 1% 0 0 2%;
 
-    aside h2 {
+    h2 {
         font-size: 20px;
         margin-bottom: 16px;
     }
 
-    aside .profile {
+    .profile {
         display: flex;
         align-items: center;
         margin-bottom: 32px;
 
     }
 
-    aside .profile .square {
+    .profile .square {
         width: 58px;
         height: 58px;
     }
 
-    aside .profile .info {
+    .profile .info {
         display: flex;
         flex-direction: column;
     }
 
-    aside .profile .info button {
+    .profile .info button {
         margin-top: 8px;
     }
 

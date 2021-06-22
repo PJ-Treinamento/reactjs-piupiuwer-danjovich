@@ -13,6 +13,7 @@ import api from "../../services/api";
 
 function Feed() {
     const [pius, setPius] = useState<Piu[]>([]);
+    const [filteredPius, setFilteredPius] = useState<Piu[]>([]);
     const orderByDate = (piusArray: Piu[]) => {
         type Tuple = [Piu, Date];
 
@@ -32,22 +33,19 @@ function Feed() {
         return result;
     }
 
-    const [currentUser, setCurrenteUser] = useState<User>();
+    const [currentUser, setCurrentUser] = useState<User>();
     const [currentUserFound, setCourrentUserFound] = useState(false);
+    const [users, setUsers] = useState<User[]>();
+
 
     const token = localStorage.getItem('token');
     api.defaults.headers.authorization = `Bearer ${token}`;
+
     // Será usado para a publicação de novos pius
     const [newPiuPublished, setNewPiuPublished] = useState(false);
     useEffect(() => {
-        
-
         async function getPius() {
-            await api.get('pius'/*, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }*/).then((response) => {
+            await api.get('pius').then((response) => {
                 const data = response.data;
                 // console.log(data);
 
@@ -58,44 +56,58 @@ function Feed() {
                 }
 
                 piusArray = orderByDate(piusArray);
-                console.log(piusArray);
+                // console.log(piusArray);
                 setPius(piusArray);
+                setFilteredPius(piusArray);
             }).catch((error) => {
                 alert('Erro!');
                 console.log(error);
             });
         }
+
+        // async function getUser() {
+        //     await api.get(`users?username=${username}`).then((response) => {
+        //         // console.log(response.data);
+        //         setCurrenteUser(response.data[0]);
+        //         setCourrentUserFound(true);
+        //     }).catch((error) => {
+        //         alert('Erro!');
+        //         console.log(error);
+        //     });
+        // }
 
         const username = localStorage.getItem('username');
-
-        async function getUser() {
-            await api.get(`users?username=${username}`/*, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+        async function getUsers() {
+            await api.get('users').then((response) => {
+                let allUsers = response.data;
+                console.log(allUsers);
+                let localCurrentUser: User;
+                for (const user of allUsers) {
+                    if (user.username === username) {
+                        setCurrentUser(user);
+                        localCurrentUser = user;
+                        setCourrentUserFound(true);
+                        break;
+                    }
                 }
-            }*/).then((response) => {
-                console.log(response.data);
-                setCurrenteUser(response.data[0]);
-                setCourrentUserFound(true);
+                allUsers = allUsers.filter((user: User) => {
+                    return user.id !== localCurrentUser!.id;
+                });
+                setUsers(allUsers);
             }).catch((error) => {
                 alert('Erro!');
                 console.log(error);
             });
         }
+
+        if (!newPiuPublished) {
+            getUsers();
+        }
         getPius();
-        if (!newPiuPublished)
-            getUser();
         setNewPiuPublished(false);
-    }, [token, newPiuPublished]);
-
-    
 
 
-    // useEffect(() => {
-    //     pius.map((piu: Piu) => {
-    //         return <PiuTag piu={piu} currentUser={currentUser!} key={piu.id} />
-    //     })
-    // });
+    }, [newPiuPublished]);
 
     const [newPiu, setNewPiu] = useState('');
     const [publishingDisabled, setPublishingDisabled] = useState(true);
@@ -133,12 +145,44 @@ function Feed() {
         await api.post('pius', {
             text: newPiu
         }).then((response) => {
-            console.log(response);
+            // console.log(response);
             setNewPiuPublished(true);
         }).catch((error) => {
             console.log(error);
             alert('Erro: não foi possível publicar o Piu');
         });
+    }
+
+    // Barra de pesquisa:
+    const [viewFilter, setViewFilter] = useState(false);
+    const changeFilterVisibilty = () => {
+        setViewFilter(!viewFilter);
+    }
+
+    const [filterOption, setFilterOption] = useState('users');
+    const [searchContent, setSearchContent] = useState('');
+
+    const filterSearch = (newFilterOption: any) => {
+        setFilterOption(newFilterOption.value);
+        search(searchContent);
+    }
+
+    const search = (newSearchContent: string) => {
+        const uppercase = newSearchContent.toUpperCase();
+        setSearchContent(uppercase);
+        let filteringPius = pius;
+        if (filterOption === 'pius') {
+            filteringPius = filteringPius.filter((piu: Piu) => {
+                return piu.text.toUpperCase().indexOf(uppercase) > -1;
+            });
+        } else if (filterOption === 'users') {
+            filteringPius = filteringPius.filter((piu: Piu) => {
+                return (piu.user.first_name.toUpperCase().indexOf(uppercase) > -1
+                    || piu.user.last_name.toUpperCase().indexOf(uppercase) > -1
+                    || piu.user.username.toUpperCase().indexOf(uppercase) > -1);
+            });
+        }
+        setFilteredPius(filteringPius);
     }
 
     return (
@@ -156,11 +200,16 @@ function Feed() {
             <StyledSection>
                 <Sticky>
                     <div className="searchbar">
-                        <input type="text" placeholder="Buscar no PiuPiuwer" />
-                        <img src={filterImage} alt="Filtrar" />
+                        <input type="text" placeholder="Buscar no PiuPiuwer"
+                               onChange={(e) => {
+                                    e.preventDefault();
+                                    search(e.target.value);
+                                }} />
+                        <img src={filterImage} onClick={changeFilterVisibilty} alt="Filtrar" />
                     </div>
 
-                    <form id="filter">
+                    {viewFilter &&
+                    <form id="filter" onChange={(e) => filterSearch(e.target)}>
                         <h3>Buscar pius por:</h3>
                         <div>
                             <input type="radio" name="search-mode" value="users" defaultChecked />
@@ -170,7 +219,7 @@ function Feed() {
                             <input type="radio" name="search-mode" value="pius" />
                             <label htmlFor="pius">Conteúdo dos pius</label>
                         </div>
-                    </form>
+                    </form>}
                 </Sticky>
 
                 <NewPiu className={lengthSize} onSubmit={publishNewPiu}>
@@ -183,15 +232,28 @@ function Feed() {
                 </NewPiu>
 
                 <Pius>
-                    {pius.map((piu: Piu) => {
-                        return <PiuTag piu={piu} currentUser={currentUser!} key={piu.id} />
+                    {filteredPius.map((piu: Piu) => {
+                        let isFavoritePiu = false;
+                        if (currentUserFound) {
+                            // MUDAR PARA FAVORITAR LOCAL E EXPLICAR
+                            console.log(currentUser!.favorites);
+                            for (const favoritePiu of currentUser!.favorites) {
+                                if (favoritePiu.id === piu.id)
+                                    isFavoritePiu = true;
+                            }
+                        }
+                        return <PiuTag piu={piu} favorite={isFavoritePiu} key={piu.id} />
                     })}
                 </Pius>
-
             </StyledSection>
                     {/* Fazer Aside e terminar componente User */}
             <Aside>
+                <h2>Seu Perfil</h2>
                 {currentUserFound && <UserTag user={currentUser!} />}
+                <h2>Outros Usuários</h2>
+                {users?.map((user: User) => {
+                    return <UserTag user={user} key={user.id} />
+                })}
             </Aside>
 
         </PageDiv>
